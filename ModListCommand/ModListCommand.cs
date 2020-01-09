@@ -27,7 +27,7 @@ namespace ModListCommand
             return string.Join(separator, updateKeys?.Select(u => _toolkit.GetUpdateUrl(u) ?? u).DefaultIfEmpty().ToArray() ?? new[] {"no update key"});
         }
 
-        private async void ListMods(string commandName, string[] args)
+        private void ListMods(string commandName, string[] args)
         {
             if (args.Length == 0 || args[0] == "console")
             {
@@ -54,11 +54,14 @@ namespace ModListCommand
                     {
                         try
                         {
-                            var tasks = Helper.ModRegistry.GetAll().Select(e => writer.WriteRecordAsync(e.Manifest.Name, e.Manifest.Version.ToString(), e.Manifest.Author,
-                                                                           GetUpdateLinks(e.Manifest.UpdateKeys), e.Manifest.Description));
-                            
-                            await writer.WriteRecordAsync("Name", "Version", "Author", "Links", "Description");
-                            await Task.WhenAll(tasks);
+                            writer.WriteRecord("Name", "Version", "Author", "Links", "Description");
+
+                            foreach (var manifest in Helper.ModRegistry.GetAll().Select(e => e.Manifest))
+                            {
+                                writer.WriteRecord(manifest.Name, manifest.Version.ToString(), manifest.Author,
+                                                   GetUpdateLinks(manifest.UpdateKeys), manifest.Description);
+                            }
+
                             Process.Start(args[1]);
 
                             Monitor.Log($"{writer.RecordNumber} records written to `{args[1]}`", LogLevel.Info);
