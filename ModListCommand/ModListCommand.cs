@@ -64,7 +64,7 @@ namespace ModListCommand
 
                             Process.Start(args[1]);
 
-                            Monitor.Log($"{writer.RecordNumber} records written to `{args[1]}`", LogLevel.Info);
+                            Monitor.Log($"{writer.RecordNumber} records written to `{Path.GetFullPath(args[1])}`", LogLevel.Info);
                         }
                         catch (Exception e)
                         {
