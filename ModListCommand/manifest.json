@@ -1,12 +1,7 @@
 {
   "Name": "Mod List",
   "Author": "Blackclaw",
-  "Version": {
-    "MajorVersion": 1,
-    "MinorVersion": 1,
-    "PatchVersion": 1,
-    "Build": "0"
-  },
+  "Version": "1.1.1",
   "UniqueID": "Blackclaw.ModListCommand",
   "Description": "Simple SMAPI command to list the installed mods to the console or a CSV file",
   "MinimumApiLevel": "3.0.0",
