@@ -4,8 +4,8 @@
   "Version": "1.1.1",
   "UniqueID": "Blackclaw.ModListCommand",
   "Description": "Simple SMAPI command to list the installed mods to the console or a CSV file",
-  "MinimumApiLevel": "3.0.0",
+  "MinimumApiVersion": "3.14.0",
   "PerSaveConfigs": false,
   "EntryDll": "ModListCommand.dll",
-  "UpdateKeys": ["Nexus:5131"]
+  "UpdateKeys": [ "Nexus:5131" ]
 }
