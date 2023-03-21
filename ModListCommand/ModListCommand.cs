@@ -45,45 +45,8 @@ namespace ModListCommand
                 ListModsToConsole();
             }
             else if (args.Length == 2 && args[0] == "csv" && !string.IsNullOrWhiteSpace(args[1]))
-            { 
-                try
-                { 
-                    using (var streamWriter = new StreamWriter(args[1]))
-                    using (var writer = new CsvWriter(streamWriter)
-                    {
-                        ValueSeparator = CultureInfo.CurrentCulture.TextInfo.ListSeparator[0],
-                        ValueDelimiter = '"',
-                        ForceDelimit = true
-                    })
-                    {
-                        try
-                        {
-                            writer.WriteRecord("Name", "Version", "Author", "Links", "Description");
-
-                            foreach (var modInfo in EnumerateModInfos())
-                            {
-                                writer.WriteRecord(
-                                    modInfo.Name,
-                                    modInfo.Version.ToString(),
-                                    modInfo.Author,
-                                    string.Join(";", modInfo.UpdateUrls),
-                                    modInfo.Description);
-                            }
-
-                            Process.Start(args[1]);
-
-                            Monitor.Log($"{writer.RecordNumber} records written to `{Path.GetFullPath(args[1])}`", LogLevel.Info);
-                        }
-                        catch (Exception e)
-                        {
-                            Monitor.Log(e.Message, LogLevel.Error);
-                        }
-                    }
-                }
-                catch(Exception e)
-                {
-                    Monitor.Log(e.Message, LogLevel.Error);
-                }
+            {
+                ListModsToCsv(csvPath: args[1]);
             }
             else
             {
@@ -91,7 +54,6 @@ namespace ModListCommand
                 Monitor.Log(HelpText, LogLevel.Info);
             }
         }
-
         private void ListModsToConsole()
         {
             foreach (var modInfo in EnumerateModInfos())
@@ -101,6 +63,48 @@ namespace ModListCommand
 
                 Monitor.Log($"{modInfo.Name} v{modInfo.Version} by {modInfo.Author}:{separator}{links}\n"
                           + $"{modInfo.Description}", LogLevel.Info);
+            }
+        }
+
+        private void ListModsToCsv(string csvPath)
+        {
+            try
+            {
+                using (var streamWriter = new StreamWriter(csvPath))
+                using (var writer = new CsvWriter(streamWriter)
+                {
+                    ValueSeparator = CultureInfo.CurrentCulture.TextInfo.ListSeparator[0],
+                    ValueDelimiter = '"',
+                    ForceDelimit = true
+                })
+                {
+                    try
+                    {
+                        writer.WriteRecord("Name", "Version", "Author", "Links", "Description");
+
+                        foreach (var modInfo in EnumerateModInfos())
+                        {
+                            writer.WriteRecord(
+                                modInfo.Name,
+                                modInfo.Version.ToString(),
+                                modInfo.Author,
+                                string.Join(";", modInfo.UpdateUrls),
+                                modInfo.Description);
+                        }
+
+                        Process.Start(csvPath);
+
+                        Monitor.Log($"{writer.RecordNumber} records written to `{Path.GetFullPath(csvPath)}`", LogLevel.Info);
+                    }
+                    catch (Exception e)
+                    {
+                        Monitor.Log(e.Message, LogLevel.Error);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Monitor.Log(e.Message, LogLevel.Error);
             }
         }
 
