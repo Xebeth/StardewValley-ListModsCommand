@@ -42,7 +42,7 @@ namespace ModListCommand
             return string.Join(separator, updateKeys?.Select(u => _toolkit.GetUpdateUrl(u) ?? u).DefaultIfEmpty().ToArray() ?? new[] {"no update key"});
         }
 
-        private void ListMods(string commandName, string[] args)
+        private void ListMods(string _, string[] args)
         {
             if (args.Length == 0 || args[0] == "console")
             {
