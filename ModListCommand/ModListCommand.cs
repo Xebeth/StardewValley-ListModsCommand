@@ -121,12 +121,12 @@ namespace ModListCommand
             };
         }
 
-        private IEnumerable<string> GetUrls(IEnumerable<string> updateKeys)
+        private IEnumerable<string> GetUrls(string[] updateKeys)
         {
-            return updateKeys
-                ?.Select(u => _toolkit.GetUpdateUrl(u) ?? u)
-                .DefaultIfEmpty()
-                ?? new[] { "no update key" };
+            if (updateKeys.Length == 0)
+                return new[] { "no update key" };
+            else
+                return updateKeys.Select(u => _toolkit.GetUpdateUrl(u) ?? u);
         }
     }
 }
