@@ -7,35 +7,34 @@ using System.Linq;
 using System.IO;
 using KBCsv;
 using System;
-using System.Threading.Tasks;
 
 namespace ModListCommand
 {
-    public class ModListCommand : Mod
+    public sealed class ModListCommand : Mod
     {
+        private const string CommandName = "list_mods";
+
         private const string HelpText = $"""
             Lists currently loaded mods.
 
-            Usage: {_commandName} [console]
+            Usage: {CommandName} [console]
             - the console parameter is optional
             Lists mods to the console.
 
-            Usage: {_commandName} csv <path>
+            Usage: {CommandName} csv <path>
             - path (required): the (absolute or relative) path to the file to be created. The base directory for relative paths is the game's installation directory (i.e. where Stardew Valley.dll is).
 
             Examples:
-            {_commandName}
-            {_commandName} console    (does the same as the previous example)
-            {_commandName} csv c:\temp\mods.csv
+            {CommandName}
+            {CommandName} console    (does the same as the previous example)
+            {CommandName} csv c:\temp\mods.csv
             """;
 
-        private readonly ModToolkit _toolkit = new ModToolkit();
-        private const string _commandName = "list_mods";
+        private readonly ModToolkit _toolkit = new();
 
         public override void Entry(IModHelper helper)
         {
-            
-            helper.ConsoleCommands.Add(_commandName, HelpText, ListMods);
+            helper.ConsoleCommands.Add(CommandName, HelpText, ListMods);
         }
 
         public string GetUpdateLinks(IEnumerable<string> updateKeys, string separator = ";")
