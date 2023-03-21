@@ -42,10 +42,8 @@ namespace ModListCommand
         {
             if (args.Length == 0 || args[0] == "console")
             {
-                foreach (var manifest in Helper.ModRegistry.GetAll().Select(e => e.Manifest))
+                foreach (var modInfo in EnumerateModInfos())
                 {
-                    ModInfo modInfo = CreateModInfo(manifest);
-
                     const string separator = "\n    - ";
                     var links = string.Join(separator, modInfo.UpdateUrls);
 
@@ -69,10 +67,8 @@ namespace ModListCommand
                         {
                             writer.WriteRecord("Name", "Version", "Author", "Links", "Description");
 
-                            foreach (var manifest in Helper.ModRegistry.GetAll().Select(e => e.Manifest))
+                            foreach (var modInfo in EnumerateModInfos())
                             {
-                                ModInfo modInfo = CreateModInfo(manifest);
-
                                 writer.WriteRecord(
                                     modInfo.Name,
                                     modInfo.Version.ToString(),
@@ -101,6 +97,12 @@ namespace ModListCommand
                 Monitor.Log($"Incorrect parameters!{Environment.NewLine}See the help:", LogLevel.Warn);
                 Monitor.Log(HelpText, LogLevel.Info);
             }
+        }
+
+        private IEnumerable<ModInfo> EnumerateModInfos()
+        {
+            return Helper.ModRegistry.GetAll()
+                .Select(x => CreateModInfo(x.Manifest));
         }
 
         private ModInfo CreateModInfo(IManifest manifest)
