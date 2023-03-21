@@ -7,6 +7,7 @@ using System.Linq;
 using System.IO;
 using KBCsv;
 using System;
+using System.Collections.Immutable;
 
 namespace ModListCommand
 {
@@ -37,30 +38,19 @@ namespace ModListCommand
             helper.ConsoleCommands.Add(CommandName, HelpText, ListMods);
         }
 
-        public string GetUpdateLinks(IEnumerable<string> updateKeys, string separator = ";")
-        {
-            return string.Join(separator, GetUrls(updateKeys));
-        }
-
-        private IEnumerable<string> GetUrls(IEnumerable<string> updateKeys)
-        {
-            return updateKeys
-                ?.Select(u => _toolkit.GetUpdateUrl(u) ?? u)
-                .DefaultIfEmpty()
-                ?? new[] { "no update key" };
-        }
-
         private void ListMods(string _, string[] args)
         {
             if (args.Length == 0 || args[0] == "console")
             {
                 foreach (var manifest in Helper.ModRegistry.GetAll().Select(e => e.Manifest))
                 {
-                    const string separator = "\n    - ";
-                    var links = GetUpdateLinks(manifest.UpdateKeys, separator);
+                    ModInfo modInfo = CreateModInfo(manifest);
 
-                    Monitor.Log($"{manifest.Name} v{manifest.Version} by {manifest.Author}:{separator}{links}\n"
-                              + $"{manifest.Description}", LogLevel.Info);
+                    const string separator = "\n    - ";
+                    var links = string.Join(separator, modInfo.UpdateUrls);
+
+                    Monitor.Log($"{modInfo.Name} v{modInfo.Version} by {modInfo.Author}:{separator}{links}\n"
+                              + $"{modInfo.Description}", LogLevel.Info);
                 }
             }
             else if (args.Length == 2 && args[0] == "csv" && !string.IsNullOrWhiteSpace(args[1]))
@@ -81,8 +71,14 @@ namespace ModListCommand
 
                             foreach (var manifest in Helper.ModRegistry.GetAll().Select(e => e.Manifest))
                             {
-                                writer.WriteRecord(manifest.Name, manifest.Version.ToString(), manifest.Author,
-                                                   GetUpdateLinks(manifest.UpdateKeys), manifest.Description);
+                                ModInfo modInfo = CreateModInfo(manifest);
+
+                                writer.WriteRecord(
+                                    modInfo.Name,
+                                    modInfo.Version.ToString(),
+                                    modInfo.Author,
+                                    string.Join(";", modInfo.UpdateUrls),
+                                    modInfo.Description);
                             }
 
                             Process.Start(args[1]);
@@ -105,6 +101,26 @@ namespace ModListCommand
                 Monitor.Log($"Incorrect parameters!{Environment.NewLine}See the help:", LogLevel.Warn);
                 Monitor.Log(HelpText, LogLevel.Info);
             }
+        }
+
+        private ModInfo CreateModInfo(IManifest manifest)
+        {
+            return new ModInfo
+            {
+                Name = manifest.Name,
+                Version = manifest.Version,
+                Author = manifest.Author,
+                Description = manifest.Description,
+                UpdateUrls = GetUrls(manifest.UpdateKeys).ToImmutableList(),
+            };
+        }
+
+        private IEnumerable<string> GetUrls(IEnumerable<string> updateKeys)
+        {
+            return updateKeys
+                ?.Select(u => _toolkit.GetUpdateUrl(u) ?? u)
+                .DefaultIfEmpty()
+                ?? new[] { "no update key" };
         }
     }
 }
