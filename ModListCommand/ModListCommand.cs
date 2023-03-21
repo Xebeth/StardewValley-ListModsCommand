@@ -68,43 +68,29 @@ namespace ModListCommand
 
         private void ListModsToCsv(string csvPath)
         {
-            try
+            using (var streamWriter = new StreamWriter(csvPath))
+            using (var writer = new CsvWriter(streamWriter)
             {
-                using (var streamWriter = new StreamWriter(csvPath))
-                using (var writer = new CsvWriter(streamWriter)
+                ValueSeparator = CultureInfo.CurrentCulture.TextInfo.ListSeparator[0],
+                ValueDelimiter = '"',
+                ForceDelimit = true
+            })
+            {
+                writer.WriteRecord("Name", "Version", "Author", "Links", "Description");
+
+                foreach (var modInfo in EnumerateModInfos())
                 {
-                    ValueSeparator = CultureInfo.CurrentCulture.TextInfo.ListSeparator[0],
-                    ValueDelimiter = '"',
-                    ForceDelimit = true
-                })
-                {
-                    try
-                    {
-                        writer.WriteRecord("Name", "Version", "Author", "Links", "Description");
-
-                        foreach (var modInfo in EnumerateModInfos())
-                        {
-                            writer.WriteRecord(
-                                modInfo.Name,
-                                modInfo.Version.ToString(),
-                                modInfo.Author,
-                                string.Join(";", modInfo.UpdateUrls),
-                                modInfo.Description);
-                        }
-
-                        Process.Start(csvPath);
-
-                        Monitor.Log($"{writer.RecordNumber} records written to `{Path.GetFullPath(csvPath)}`", LogLevel.Info);
-                    }
-                    catch (Exception e)
-                    {
-                        Monitor.Log(e.Message, LogLevel.Error);
-                    }
+                    writer.WriteRecord(
+                        modInfo.Name,
+                        modInfo.Version.ToString(),
+                        modInfo.Author,
+                        string.Join(";", modInfo.UpdateUrls),
+                        modInfo.Description);
                 }
-            }
-            catch (Exception e)
-            {
-                Monitor.Log(e.Message, LogLevel.Error);
+
+                Process.Start(csvPath);
+
+                Monitor.Log($"{writer.RecordNumber} records written to `{Path.GetFullPath(csvPath)}`", LogLevel.Info);
             }
         }
 
