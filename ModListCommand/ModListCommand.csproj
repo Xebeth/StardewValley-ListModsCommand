@@ -20,6 +20,10 @@
 	<ItemGroup>
 		<PackageReference Include="KBCsv" Version="6.0.0" />
 		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.0" />
+		<PackageReference Include="PolySharp" Version="1.12.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<Reference Include="SMAPI.Toolkit">
 			<HintPath>$(GamePath)/smapi-internal/SMAPI.Toolkit.dll</HintPath>
 			<Private>false</Private>
