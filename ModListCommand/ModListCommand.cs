@@ -42,14 +42,7 @@ namespace ModListCommand
         {
             if (args.Length == 0 || args[0] == "console")
             {
-                foreach (var modInfo in EnumerateModInfos())
-                {
-                    const string separator = "\n    - ";
-                    var links = string.Join(separator, modInfo.UpdateUrls);
-
-                    Monitor.Log($"{modInfo.Name} v{modInfo.Version} by {modInfo.Author}:{separator}{links}\n"
-                              + $"{modInfo.Description}", LogLevel.Info);
-                }
+                ListModsToConsole();
             }
             else if (args.Length == 2 && args[0] == "csv" && !string.IsNullOrWhiteSpace(args[1]))
             { 
@@ -96,6 +89,18 @@ namespace ModListCommand
             {
                 Monitor.Log($"Incorrect parameters!{Environment.NewLine}See the help:", LogLevel.Warn);
                 Monitor.Log(HelpText, LogLevel.Info);
+            }
+        }
+
+        private void ListModsToConsole()
+        {
+            foreach (var modInfo in EnumerateModInfos())
+            {
+                const string separator = "\n    - ";
+                var links = string.Join(separator, modInfo.UpdateUrls);
+
+                Monitor.Log($"{modInfo.Name} v{modInfo.Version} by {modInfo.Author}:{separator}{links}\n"
+                          + $"{modInfo.Description}", LogLevel.Info);
             }
         }
 
