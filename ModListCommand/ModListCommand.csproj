@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<Version>1.1.1</Version>
 		<TargetFramework>net5.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
 		<!-- Bundle is needed for nuget package DLLs to be copied to the mod's folder-->
 		<BundleExtraAssemblies>ThirdParty</BundleExtraAssemblies>
 	</PropertyGroup>

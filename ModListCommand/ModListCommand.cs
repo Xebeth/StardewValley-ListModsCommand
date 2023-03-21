@@ -13,13 +13,29 @@ namespace ModListCommand
 {
     public class ModListCommand : Mod
     {
+        private const string HelpText = $"""
+            Lists currently loaded mods.
+
+            Usage: {_commandName} [console]
+            - the console parameter is optional
+            Lists mods to the console.
+
+            Usage: {_commandName} csv <path>
+            - path (required): the (absolute or relative) path to the file to be created. The base directory for relative paths is the game's installation directory (i.e. where Stardew Valley.dll is).
+
+            Examples:
+            {_commandName}
+            {_commandName} console    (does the same as the previous example)
+            {_commandName} csv c:\temp\mods.csv
+            """;
+
         private readonly ModToolkit _toolkit = new ModToolkit();
         private const string _commandName = "list_mods";
 
         public override void Entry(IModHelper helper)
         {
             
-            helper.ConsoleCommands.Add(_commandName, Help(), ListMods);
+            helper.ConsoleCommands.Add(_commandName, HelpText, ListMods);
         }
 
         public string GetUpdateLinks(IEnumerable<string> updateKeys, string separator = ";")
@@ -79,13 +95,9 @@ namespace ModListCommand
             }
             else
             {
-                Monitor.Log($"Command usage: {commandName} {Help()}", LogLevel.Warn);
+                Monitor.Log($"Incorrect parameters!{Environment.NewLine}See the help:", LogLevel.Warn);
+                Monitor.Log(HelpText, LogLevel.Info);
             }
-        }
-
-        private static string Help()
-        {
-            return "[console|csv] [csvFile]";
         }
     }
 }
