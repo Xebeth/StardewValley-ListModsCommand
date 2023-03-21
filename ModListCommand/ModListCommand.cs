@@ -88,10 +88,19 @@ namespace ModListCommand
                         modInfo.Description);
                 }
 
-                Process.Start(csvPath);
-
                 Monitor.Log($"{csvWriter.RecordNumber} records written to `{Path.GetFullPath(csvPath)}`", LogLevel.Info);
+                Monitor.Log("Opening the CSV file...", LogLevel.Info);
             }
+
+            // Open the created CSV file
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo(csvPath)
+                {
+                    UseShellExecute = true,
+                }
+            };
+            process.Start();
         }
 
         private IEnumerable<ModInfo> EnumerateModInfos()
