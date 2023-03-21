@@ -39,7 +39,15 @@ namespace ModListCommand
 
         public string GetUpdateLinks(IEnumerable<string> updateKeys, string separator = ";")
         {
-            return string.Join(separator, updateKeys?.Select(u => _toolkit.GetUpdateUrl(u) ?? u).DefaultIfEmpty().ToArray() ?? new[] {"no update key"});
+            return string.Join(separator, GetUrls(updateKeys));
+        }
+
+        private IEnumerable<string> GetUrls(IEnumerable<string> updateKeys)
+        {
+            return updateKeys
+                ?.Select(u => _toolkit.GetUpdateUrl(u) ?? u)
+                .DefaultIfEmpty()
+                ?? new[] { "no update key" };
         }
 
         private void ListMods(string _, string[] args)
