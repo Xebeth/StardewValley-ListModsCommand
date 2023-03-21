@@ -46,13 +46,13 @@ namespace ModListCommand
         {
             if (args.Length == 0 || args[0] == "console")
             {
-                foreach (var mod in Helper.ModRegistry.GetAll())
+                foreach (var manifest in Helper.ModRegistry.GetAll().Select(e => e.Manifest))
                 {
                     const string separator = "\n    - ";
-                    var links = GetUpdateLinks(mod.Manifest.UpdateKeys, separator);
+                    var links = GetUpdateLinks(manifest.UpdateKeys, separator);
 
-                    Monitor.Log($"{mod.Manifest.Name} v{mod.Manifest.Version} by {mod.Manifest.Author}:{separator}{links}\n"
-                              + $"{mod.Manifest.Description}", LogLevel.Info);
+                    Monitor.Log($"{manifest.Name} v{manifest.Version} by {manifest.Author}:{separator}{links}\n"
+                              + $"{manifest.Description}", LogLevel.Info);
                 }
             }
             else if (args.Length == 2 && args[0] == "csv" && !string.IsNullOrWhiteSpace(args[1]))
