@@ -8,6 +8,7 @@ using System.IO;
 using KBCsv;
 using System;
 using System.Collections.Immutable;
+using System.Text;
 
 namespace ModListCommand
 {
@@ -56,14 +57,30 @@ namespace ModListCommand
         }
         private void ListModsToConsole()
         {
+            StringBuilder outputBuilder = new();
+            outputBuilder.AppendLine();
+
             foreach (var modInfo in EnumerateModInfos())
             {
-                const string separator = "\n    - ";
-                var links = string.Join(separator, modInfo.UpdateUrls);
+                outputBuilder.Append(modInfo.Name);
+                outputBuilder.Append(" v");
+                outputBuilder.Append(modInfo.Version);
+                outputBuilder.Append(" by ");
+                outputBuilder.Append(modInfo.Author);
+                outputBuilder.Append(':');
+                outputBuilder.AppendLine();
 
-                Monitor.Log($"{modInfo.Name} v{modInfo.Version} by {modInfo.Author}:{separator}{links}\n"
-                          + $"{modInfo.Description}", LogLevel.Info);
+                foreach (string url in modInfo.UpdateUrls)
+                {
+                    outputBuilder.Append("- ");
+                    outputBuilder.AppendLine(url);
+                }
+
+                outputBuilder.AppendLine(modInfo.Description);
+                outputBuilder.AppendLine();
             }
+
+            Monitor.Log(outputBuilder.ToString(), LogLevel.Info);
         }
 
         private void ListModsToCsv(string csvPath)
