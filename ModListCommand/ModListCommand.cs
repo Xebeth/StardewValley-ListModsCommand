@@ -69,18 +69,18 @@ namespace ModListCommand
         private void ListModsToCsv(string csvPath)
         {
             using (var streamWriter = new StreamWriter(csvPath))
-            using (var writer = new CsvWriter(streamWriter)
+            using (var csvWriter = new CsvWriter(streamWriter)
             {
                 ValueSeparator = CultureInfo.CurrentCulture.TextInfo.ListSeparator[0],
                 ValueDelimiter = '"',
                 ForceDelimit = true
             })
             {
-                writer.WriteRecord("Name", "Version", "Author", "Links", "Description");
+                csvWriter.WriteRecord("Name", "Version", "Author", "Links", "Description");
 
                 foreach (var modInfo in EnumerateModInfos())
                 {
-                    writer.WriteRecord(
+                    csvWriter.WriteRecord(
                         modInfo.Name,
                         modInfo.Version.ToString(),
                         modInfo.Author,
@@ -90,7 +90,7 @@ namespace ModListCommand
 
                 Process.Start(csvPath);
 
-                Monitor.Log($"{writer.RecordNumber} records written to `{Path.GetFullPath(csvPath)}`", LogLevel.Info);
+                Monitor.Log($"{csvWriter.RecordNumber} records written to `{Path.GetFullPath(csvPath)}`", LogLevel.Info);
             }
         }
 
