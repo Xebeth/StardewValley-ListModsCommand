@@ -5,7 +5,9 @@ Examples:
 - `list_mods`: lists the mods on the console
 - `list_mods csv c:\temp\mods.csv`: lists the mods to the given CSV file, then opens it
 
-See more info using the help command: `help list_mods`
+See more info using the help command: `help list_mods`.
+
+NexusMods page: [**Mod List Command**](https://www.nexusmods.com/stardewvalley/mods/5131).
 
 ### Example console output
 
